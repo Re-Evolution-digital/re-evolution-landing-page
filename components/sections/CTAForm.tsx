@@ -42,8 +42,13 @@ export default function CTAForm() {
     trackCTA('DiagnosticForm');
     trackFormSubmit(data.budget);
 
-    // Simulate API call / webhook
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const res = await fetch('/api/submit-form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, locale }),
+    });
+
+    if (!res.ok) throw new Error('Erro ao submeter formulário');
 
     setSubmittedEmail(data.email);
     setSubmitted(true);

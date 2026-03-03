@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# Google Service Account credentials
+re-evolution-landing-*.json
+
 # debug
 npm-debug.log*
 yarn-debug.log*
