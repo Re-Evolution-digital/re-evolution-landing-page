@@ -27,9 +27,22 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const message = `🔔 <b>Novo Lead — Re-Evolution</b>\n\n👤 <b>Nome:</b> ${esc(name)}\n📧 <b>Email:</b> ${esc(email)}\n📱 <b>Telefone:</b> ${esc(phone)}\n🏢 <b>Negócio:</b> ${esc(businessType)}\n💬 <b>Desafio:</b> ${esc(challenge)}\n💰 <b>Orçamento:</b> ${esc(budget)}\n⚡ <b>Urgência:</b> ${esc(urgency)}\n🌐 <b>Idioma:</b> ${esc(locale ?? 'pt')}`;
+
+    await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: process.env.TELEGRAM_CHAT_ID,
+        text: message,
+        parse_mode: 'HTML',
+      }),
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Google Sheets error:', error);
+    console.error('Submit form error:', error);
     return NextResponse.json({ success: false, error: 'Erro ao guardar dados' }, { status: 500 });
   }
 }
