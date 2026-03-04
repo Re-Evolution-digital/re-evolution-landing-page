@@ -373,11 +373,28 @@
     "made_with": "Criado com ❤️ pela própria Re-Evolution"
   },
   "cookies": {
-    "title": "Este site utiliza cookies",
-    "description": "Utilizamos cookies essenciais para o funcionamento do site e cookies analíticos (Google Analytics) para melhorar a sua experiência. Os seus dados são tratados de acordo com a nossa",
+    "title": "Preferências de Cookies",
+    "description": "Utilizamos cookies para o funcionamento do site e, com o seu consentimento, para análise de tráfego e personalização de anúncios. Pode gerir as suas preferências abaixo. Mais informações na nossa",
     "privacy_link": "Política de Privacidade",
-    "accept": "Aceitar Cookies",
-    "reject": "Rejeitar"
+    "accept_all": "Aceitar Tudo",
+    "reject_all": "Rejeitar Tudo",
+    "customize": "Personalizar",
+    "save_preferences": "Guardar Preferências",
+    "always_active": "Sempre ativo",
+    "categories": {
+      "essential": {
+        "title": "Essenciais",
+        "description": "Necessários para o funcionamento básico do site (sessão, segurança). Não podem ser desativados."
+      },
+      "analytics": {
+        "title": "Analíticos",
+        "description": "Google Analytics — ajudam-nos a compreender como os visitantes utilizam o site. Dados anonimizados, sem identificação pessoal."
+      },
+      "marketing": {
+        "title": "Marketing",
+        "description": "Google Ads — permitem mostrar anúncios relevantes e medir o desempenho das campanhas publicitárias."
+      }
+    }
   },
   "chatbot": {
     "title": "Re-Evolution Assistant",
@@ -397,35 +414,35 @@
   },
   "privacy": {
     "title": "Política de Privacidade",
-    "last_updated": "Última atualização: Fevereiro 2025",
+    "last_updated": "Última atualização: Março 2026",
     "sections": {
       "data_collected": {
         "title": "1. Dados que Recolhemos",
-        "content": "Nome, email, telefone (quando submete formulários). Dados de navegação via Google Analytics (IP anonimizado, páginas visitadas, tempo de sessão). Cookies técnicos e analíticos."
+        "content": "Dados de identificação: nome, email, telefone — apenas quando submete formulários voluntariamente.\nDados de navegação (com consentimento): páginas visitadas, tempo de sessão, origem do tráfego, através do Google Analytics 4 (IP anonimizado).\nDados de publicidade (com consentimento): interações com anúncios Google Ads para medir eficácia de campanhas.\nCookies técnicos: essenciais ao funcionamento do site, sem identificação pessoal."
       },
       "data_usage": {
         "title": "2. Como Usamos os Dados",
-        "content": "Responder aos seus pedidos de contacto. Melhorar a experiência do website. Análise de tráfego e comportamento (anónimo)."
+        "content": "Responder aos pedidos de contacto e diagnóstico gratuito.\nMelhorar o desempenho e experiência do website.\nAnálise de tráfego anónima (Google Analytics 4).\nMedir e otimizar campanhas publicitárias (Google Ads, quando ativo).\nNotificações internas sobre novos contactos (Telegram, uso exclusivo interno)."
       },
       "data_sharing": {
-        "title": "3. Partilha de Dados",
-        "content": "Não vendemos os seus dados. Partilhamos apenas com: Google Analytics (dados anonimizados), Make.com (automações, dados encriptados), Servidores Vercel (hosting)."
+        "title": "3. Partilha de Dados e Transferências Internacionais",
+        "content": "Não vendemos os seus dados. Partilhamos apenas com:\n• Google LLC (Analytics + Ads) — servidores nos EUA; transferência ao abrigo das Cláusulas Contratuais-Tipo da UE. Política de privacidade: policies.google.com/privacy\n• Make.com — automações, dados encriptados, servidores na UE\n• Vercel Inc. — hosting, servidores nos EUA e UE\n• MXRoute — envio de email, servidores nos EUA\nTodas as transferências para fora da UE são realizadas com salvaguardas adequadas ao abrigo do RGPD."
       },
       "rights": {
         "title": "4. Os Seus Direitos (RGPD)",
-        "content": "Tem direito a: Aceder aos seus dados. Corrigir dados incorretos. Eliminar os seus dados. Retirar consentimento. Contacte: geral@re-evolution.pt"
+        "content": "Ao abrigo do Regulamento Geral de Proteção de Dados (RGPD), tem direito a:\n• Aceder aos dados que temos sobre si\n• Corrigir dados incorretos ou incompletos\n• Eliminar os seus dados («direito ao esquecimento»)\n• Retirar o consentimento a qualquer momento (sem afetar tratamentos anteriores)\n• Portabilidade dos dados\n• Apresentar reclamação à CNPD (cnpd.pt)\n\nPara exercer estes direitos: geral@re-evolution.pt\nResponderemos em até 30 dias."
       },
       "cookies_section": {
-        "title": "5. Cookies",
-        "content": "Utilizamos: Cookies essenciais (funcionamento do site). Cookies analíticos (Google Analytics - opcional). Pode gerir preferências no banner de cookies."
+        "title": "5. Cookies e Tecnologias de Rastreio",
+        "content": "Utilizamos três categorias de cookies:\n\n🔒 Essenciais (sempre ativos)\nNecessários ao funcionamento básico do site. Sem estes, o site não funciona corretamente.\n\n📊 Analíticos (requerem consentimento)\nGoogle Analytics 4 — medem o comportamento dos utilizadores de forma anónima (sem identificação pessoal). Retenção de dados: 14 meses.\n\n📣 Marketing (requerem consentimento)\nGoogle Ads — utilizados para medir a eficácia de campanhas publicitárias e mostrar anúncios relevantes. Retenção de dados: conforme política Google.\n\nImplementamos o Google Consent Mode v2, garantindo que nenhum cookie de rastreio é ativado sem o seu consentimento explícito. Pode alterar as suas preferências a qualquer momento através do banner de cookies."
       },
       "security": {
-        "title": "6. Segurança",
-        "content": "Dados encriptados (HTTPS), armazenados em servidores seguros (Vercel, Google Cloud)."
+        "title": "6. Segurança e Retenção de Dados",
+        "content": "Todas as comunicações são encriptadas via HTTPS/TLS. Dados armazenados em servidores certificados (Vercel, Google Cloud). Dados de formulários retidos enquanto necessários para responder ao pedido. Dados analíticos anonimizados retidos por 14 meses no Google Analytics."
       },
       "contact_section": {
-        "title": "7. Contacto",
-        "content": "Re-Evolution, Digital Services. geral@re-evolution.pt. +351 969 063 633"
+        "title": "7. Responsável pelo Tratamento e Contacto",
+        "content": "Re-Evolution, Digital Services\nPct. José Régio nº5, 2º Dto, 2790-092 Carnaxide, Oeiras, Portugal\ngeral@re-evolution.pt\n+351 969 063 633\n\nPara questões relacionadas com privacidade ou para exercer os seus direitos RGPD, contacte-nos pelo email acima."
       }
     }
   },

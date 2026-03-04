@@ -373,11 +373,28 @@
     "made_with": "Built with ❤️ by Re-Evolution itself"
   },
   "cookies": {
-    "title": "This website uses cookies",
-    "description": "We use essential cookies for the site to function and analytical cookies (Google Analytics) to improve your experience. Your data is processed in accordance with our",
+    "title": "Cookie Preferences",
+    "description": "We use cookies to ensure the site works and, with your consent, for traffic analysis and ad personalisation. You can manage your preferences below. Learn more in our",
     "privacy_link": "Privacy Policy",
-    "accept": "Accept Cookies",
-    "reject": "Reject"
+    "accept_all": "Accept All",
+    "reject_all": "Reject All",
+    "customize": "Customise",
+    "save_preferences": "Save Preferences",
+    "always_active": "Always active",
+    "categories": {
+      "essential": {
+        "title": "Essential",
+        "description": "Required for basic site functionality (session, security). Cannot be disabled."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Google Analytics — help us understand how visitors use the site. Anonymised data, no personal identification."
+      },
+      "marketing": {
+        "title": "Marketing",
+        "description": "Google Ads — used to show relevant ads and measure the performance of advertising campaigns."
+      }
+    }
   },
   "chatbot": {
     "title": "Re-Evolution Assistant",
@@ -397,35 +414,35 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "last_updated": "Last updated: February 2025",
+    "last_updated": "Last updated: March 2026",
     "sections": {
       "data_collected": {
         "title": "1. Data We Collect",
-        "content": "Name, email, phone (when submitting forms). Browsing data via Google Analytics (anonymized IP, pages visited, session duration). Technical and analytical cookies."
+        "content": "Identification data: name, email, phone — only when you voluntarily submit forms.\nBrowsing data (with consent): pages visited, session duration, traffic source, via Google Analytics 4 (anonymised IP).\nAdvertising data (with consent): interactions with Google Ads to measure campaign effectiveness.\nTechnical cookies: essential to site functionality, no personal identification."
       },
       "data_usage": {
         "title": "2. How We Use Data",
-        "content": "Responding to your contact requests. Improving website experience. Traffic and behavior analysis (anonymous)."
+        "content": "Responding to contact and free diagnosis requests.\nImproving website performance and experience.\nAnonymous traffic analysis (Google Analytics 4).\nMeasuring and optimising advertising campaigns (Google Ads, when active).\nInternal notifications about new contacts (Telegram, internal use only)."
       },
       "data_sharing": {
-        "title": "3. Data Sharing",
-        "content": "We do not sell your data. We only share with: Google Analytics (anonymized data), Make.com (automations, encrypted data), Vercel servers (hosting)."
+        "title": "3. Data Sharing and International Transfers",
+        "content": "We do not sell your data. We only share with:\n• Google LLC (Analytics + Ads) — servers in the USA; transfer under EU Standard Contractual Clauses. Privacy policy: policies.google.com/privacy\n• Make.com — automations, encrypted data, EU servers\n• Vercel Inc. — hosting, USA and EU servers\n• MXRoute — email delivery, USA servers\nAll transfers outside the EU are carried out with appropriate safeguards under GDPR."
       },
       "rights": {
         "title": "4. Your Rights (GDPR)",
-        "content": "You have the right to: Access your data. Correct incorrect data. Delete your data. Withdraw consent. Contact: geral@re-evolution.pt"
+        "content": "Under the General Data Protection Regulation (GDPR), you have the right to:\n• Access the data we hold about you\n• Correct inaccurate or incomplete data\n• Delete your data ('right to be forgotten')\n• Withdraw consent at any time (without affecting prior processing)\n• Data portability\n• Lodge a complaint with your supervisory authority\n\nTo exercise these rights: geral@re-evolution.pt\nWe will respond within 30 days."
       },
       "cookies_section": {
-        "title": "5. Cookies",
-        "content": "We use: Essential cookies (site functionality). Analytical cookies (Google Analytics - optional). You can manage preferences in the cookie banner."
+        "title": "5. Cookies and Tracking Technologies",
+        "content": "We use three categories of cookies:\n\n🔒 Essential (always active)\nRequired for basic site functionality. Without these, the site cannot operate correctly.\n\n📊 Analytics (require consent)\nGoogle Analytics 4 — measures user behaviour anonymously (no personal identification). Data retention: 14 months.\n\n📣 Marketing (require consent)\nGoogle Ads — used to measure advertising campaign effectiveness and show relevant ads. Data retention: per Google policy.\n\nWe implement Google Consent Mode v2, ensuring no tracking cookies are activated without your explicit consent. You can change your preferences at any time via the cookie banner."
       },
       "security": {
-        "title": "6. Security",
-        "content": "Data encrypted (HTTPS), stored on secure servers (Vercel, Google Cloud)."
+        "title": "6. Security and Data Retention",
+        "content": "All communications are encrypted via HTTPS/TLS. Data stored on certified servers (Vercel, Google Cloud). Form data retained as long as necessary to respond to your request. Anonymised analytics data retained for 14 months in Google Analytics."
       },
       "contact_section": {
-        "title": "7. Contact",
-        "content": "Re-Evolution, Digital Services. geral@re-evolution.pt. +351 969 063 633"
+        "title": "7. Data Controller and Contact",
+        "content": "Re-Evolution, Digital Services\nPct. José Régio nº5, 2º Dto, 2790-092 Carnaxide, Oeiras, Portugal\ngeral@re-evolution.pt\n+351 969 063 633\n\nFor privacy-related questions or to exercise your GDPR rights, please contact us at the email above."
       }
     }
   },
