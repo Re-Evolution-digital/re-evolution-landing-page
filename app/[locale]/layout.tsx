@@ -82,7 +82,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={inter.variable} suppressHydrationWarning>
       <head>
-        {/* Consent Mode v2 - must run before GTM */}
+        {/* Consent Mode v2 - deve correr ANTES do GA4 */}
         <Script id="consent-mode" strategy="beforeInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
@@ -91,19 +91,21 @@ export default async function LocaleLayout({
               'analytics_storage': 'denied',
               'ad_storage': 'denied',
               'ad_user_data': 'denied',
-              'ad_personalization': 'denied'
+              'ad_personalization': 'denied',
+              'wait_for_update': 500
             });
           `}
         </Script>
 
-        {/* Google Tag Manager */}
-        <Script id="gtm-script" strategy="afterInteractive">
+        {/* Google Analytics 4 */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-1HFRTH1FL6"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-config" strategy="afterInteractive">
           {`
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-PM93WKDD');
+            gtag('js', new Date());
+            gtag('config', 'G-1HFRTH1FL6');
           `}
         </Script>
 
@@ -114,15 +116,6 @@ export default async function LocaleLayout({
         />
       </head>
       <body className="antialiased font-sans bg-bg-primary text-text-primary" suppressHydrationWarning>
-        {/* Google Tag Manager (noscript) */}
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-PM93WKDD"
-            height="0"
-            width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
-          />
-        </noscript>
         <NextIntlClientProvider messages={messages}>
           {children}
           <CookieBanner />
