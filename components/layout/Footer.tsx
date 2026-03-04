@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
 import { Linkedin, Instagram, Facebook } from 'lucide-react';
@@ -18,6 +19,27 @@ export default function Footer() {
   const t = useTranslations('footer');
   const tNav = useTranslations('header');
   const locale = useLocale();
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'duplicate' | 'error'>('idle');
+
+  async function handleNewsletter(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email) return;
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, locale }),
+      });
+      const data = await res.json();
+      if (data.duplicate) setStatus('duplicate');
+      else if (res.ok && data.success) setStatus('success');
+      else setStatus('error');
+    } catch {
+      setStatus('error');
+    }
+  }
 
   return (
     <footer className="relative bg-re-dark-blue text-white/70">
@@ -107,19 +129,32 @@ export default function Footer() {
           {/* Newsletter */}
           <div>
             <h3 className="text-white font-bold mb-4">{t('newsletter_title')}</h3>
-            <form onSubmit={(e) => e.preventDefault()} className="flex gap-2">
-              <input
-                type="email"
-                placeholder={t('newsletter_placeholder')}
-                className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-re-yellow"
-              />
-              <button
-                type="submit"
-                className="px-4 py-2 bg-re-yellow text-re-dark-blue text-sm font-semibold rounded-lg hover:bg-re-yellow/90 transition-colors"
-              >
-                {t('newsletter_submit')}
-              </button>
-            </form>
+            {status === 'success' ? (
+              <p className="text-sm text-re-yellow">{locale === 'pt' ? '✓ Subscrito com sucesso!' : '✓ Subscribed successfully!'}</p>
+            ) : status === 'duplicate' ? (
+              <p className="text-sm text-re-yellow/80">{locale === 'pt' ? 'Este email já está subscrito.' : 'This email is already subscribed.'}</p>
+            ) : (
+              <form onSubmit={handleNewsletter} className="flex gap-2">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t('newsletter_placeholder')}
+                  className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-re-yellow"
+                />
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="px-4 py-2 bg-re-yellow text-re-dark-blue text-sm font-semibold rounded-lg hover:bg-re-yellow/90 transition-colors disabled:opacity-60"
+                >
+                  {status === 'loading' ? '...' : t('newsletter_submit')}
+                </button>
+              </form>
+            )}
+            {status === 'error' && (
+              <p className="text-xs text-red-400 mt-1">{locale === 'pt' ? 'Erro. Tenta novamente.' : 'Error. Please try again.'}</p>
+            )}
             <p className="text-xs text-white/50 mt-2">{t('newsletter_description')}</p>
           </div>
         </div>
