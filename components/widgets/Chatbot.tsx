@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Send } from 'lucide-react';
+import { X, Send } from 'lucide-react';
 import { trackChatbot } from '@/lib/analytics';
 import { brandify } from '@/lib/brand';
 
@@ -24,7 +24,7 @@ export default function Chatbot() {
   const [isTyping, setIsTyping] = useState(false);
   const conversationHistoryRef = useRef<{ role: 'user' | 'assistant'; content: string }[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const webhookFiredRef = useRef(false);
   const pendingLeadRef = useRef<object | null>(null);
   const inactivityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -104,6 +104,7 @@ export default function Chatbot() {
 
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
+    if (inputRef.current) inputRef.current.style.height = 'auto';
     setIsTyping(true);
 
     conversationHistoryRef.current = [
@@ -170,18 +171,51 @@ export default function Chatbot() {
       {/* Toggle Button */}
       <AnimatePresence>
         {!isOpen && (
-          <motion.button
+          <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            onClick={openChat}
-            className="fixed bottom-24 right-6 z-[999] w-14 h-14 bg-re-blue rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-            whileHover={{ scale: 1.1 }}
-            aria-label="Open chatbot"
+            className="fixed bottom-24 right-6 z-[999] flex items-end gap-2"
           >
-            <Bot className="w-7 h-7 text-white" />
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-success rounded-full border-2 border-white animate-pulse" />
-          </motion.button>
+            {/* Speech bubble label */}
+            <motion.div
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              onClick={openChat}
+              className="relative bg-white rounded-2xl rounded-br-sm px-4 py-2.5 shadow-lg border border-border/50 cursor-pointer select-none mb-1 max-w-[190px]"
+            >
+              <p className="text-sm font-bold text-re-blue leading-tight">{t('bot_name')}</p>
+              <p className="text-xs text-text-secondary mt-0.5">{t('label_cta')}</p>
+            </motion.div>
+
+            {/* Button with glow pulse */}
+            <motion.button
+              onClick={openChat}
+              className="relative w-14 h-14 bg-re-blue rounded-full flex items-center justify-center cursor-pointer"
+              animate={{
+                scale: [1, 1.08, 1],
+                boxShadow: [
+                  '0 4px 15px rgba(0, 122, 255, 0.3)',
+                  '0 4px 28px rgba(0, 122, 255, 0.65), 0 0 40px rgba(0, 122, 255, 0.25)',
+                  '0 4px 15px rgba(0, 122, 255, 0.3)',
+                ],
+              }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+              whileHover={{ scale: 1.12 }}
+              aria-label="Open chatbot"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/icons/chatbot-robot-gif.gif"
+                alt="Fala Barato"
+                width={48}
+                height={48}
+                className="object-contain rounded-full"
+              />
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-success rounded-full border-2 border-white animate-pulse" />
+            </motion.button>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -199,11 +233,18 @@ export default function Chatbot() {
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 bg-re-blue text-white">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                  <Bot className="w-5 h-5" />
+                <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/icons/chatbot-robot-gif.gif"
+                    alt="Fala Barato"
+                    width={36}
+                    height={36}
+                    className="object-contain w-full h-full"
+                  />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold">{brandify(t('title'), 'onBlue')}</p>
+                  <p className="text-xs font-bold leading-snug">{brandify(t('header_title'), 'onBlue')}</p>
                   <p className="text-xs text-white/70">{t('status')}</p>
                 </div>
               </div>
@@ -265,31 +306,37 @@ export default function Chatbot() {
 
             {/* Input */}
             <div className="border-t border-border p-3">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  sendMessage();
-                }}
-                className="flex gap-2"
-              >
-                <input
+              <div className="flex gap-2 items-end">
+                <textarea
                   ref={inputRef}
-                  type="text"
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  rows={1}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    e.target.style.height = 'auto';
+                    e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      sendMessage();
+                    }
+                  }}
                   placeholder={t('input_placeholder')}
-                  className="flex-1 px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-re-blue transition-colors"
+                  className="flex-1 px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:border-re-blue transition-colors resize-none overflow-y-auto leading-5"
+                  style={{ maxHeight: '120px' }}
                   disabled={isTyping}
                 />
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={sendMessage}
                   disabled={!input.trim() || isTyping}
-                  className="p-2 bg-re-blue text-white rounded-lg hover:bg-[#0056CC] transition-colors disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
+                  className="p-2 bg-re-blue text-white rounded-lg hover:bg-[#0056CC] transition-colors disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed flex-shrink-0"
                   aria-label={t('send')}
                 >
                   <Send className="w-4 h-4" />
                 </button>
-              </form>
+              </div>
             </div>
           </motion.div>
         )}

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { MessageCircle } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import { trackContact } from '@/lib/analytics';
 
 export default function WhatsAppButton() {
@@ -14,19 +14,22 @@ export default function WhatsAppButton() {
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
       animate={{
-        scale: [1, 1.05, 1],
+        scale: [1, 1.08, 1],
+        boxShadow: [
+          '0 4px 15px rgba(37, 211, 102, 0.35)',
+          '0 4px 28px rgba(37, 211, 102, 0.7), 0 0 40px rgba(37, 211, 102, 0.25)',
+          '0 4px 15px rgba(37, 211, 102, 0.35)',
+        ],
       }}
       transition={{
-        scale: {
-          duration: 2,
-          repeat: Infinity,
-          ease: 'easeInOut'
-        }
+        duration: 2.5,
+        repeat: Infinity,
+        ease: 'easeInOut',
       }}
       aria-label="Chat on WhatsApp"
       onClick={() => trackContact('whatsapp')}
     >
-      <MessageCircle className="w-7 h-7 text-white" fill="white" />
+      <FaWhatsapp className="w-8 h-8 text-white" size={32} />
     </motion.a>
   );
 }

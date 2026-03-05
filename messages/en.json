@@ -397,9 +397,12 @@
     }
   },
   "chatbot": {
-    "title": "Re-Evolution Assistant",
+    "title": "Speak Easy",
+    "header_title": "Speak Easy, your Re-Evolution Assistant",
+    "bot_name": "I'm Speak Easy",
+    "label_cta": "Can I help? It's free! 💬",
     "status": "Online · Responds in seconds",
-    "greeting": "Hello! I'm the Re-Evolution assistant. How can I help you today?\n\nYou can ask about:\n• Services and pricing\n• How automations work\n• Project examples\n• Schedule a free diagnosis",
+    "greeting": "Hello! I'm Speak Easy, Re-Evolution's assistant 🤖\n\nHow can I help you today?\n\nYou can ask about:\n• Services and pricing\n• How automations work\n• Project examples\n• Schedule a free diagnosis",
     "input_placeholder": "Type your message...",
     "send": "Send",
     "responses": {
