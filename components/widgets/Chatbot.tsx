@@ -39,31 +39,56 @@ export default function Chatbot() {
     }
   }, [isTyping, isOpen]);
 
-  // Case 3: window/tab close — send whatever data was collected
+  // Case 3: window/tab close or app switch — send whatever data was collected
   useEffect(() => {
-    const handleBeforeUnload = () => {
+    const flushPendingLead = () => {
       if (pendingLeadRef.current && !webhookFiredRef.current) {
         webhookFiredRef.current = true;
         const blob = new Blob([JSON.stringify(pendingLeadRef.current)], { type: 'application/json' });
         navigator.sendBeacon('/api/notify', blob);
       }
     };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    // beforeunload: desktop browsers
+    window.addEventListener('beforeunload', flushPendingLead);
+    // pagehide: iOS Safari (beforeunload is unreliable on iOS)
+    window.addEventListener('pagehide', flushPendingLead);
+    // visibilitychange: user switches app on mobile without closing tab
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') flushPendingLead();
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => {
+      window.removeEventListener('beforeunload', flushPendingLead);
+      window.removeEventListener('pagehide', flushPendingLead);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, []);
 
   const fireNotify = async (leadData: object) => {
     if (webhookFiredRef.current) return;
     webhookFiredRef.current = true;
     if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
-    try {
-      await fetch('/api/notify', {
+
+    const attempt = async () => {
+      const res = await fetch('/api/notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(leadData),
+        signal: AbortSignal.timeout(12_000),
       });
+      if (!res.ok) throw new Error(`notify ${res.status}`);
+    };
+
+    try {
+      await attempt();
     } catch {
-      // silent — data was already stored in pendingLeadRef
+      // Retry once after 4 seconds (handles mobile network hiccups)
+      await new Promise((r) => setTimeout(r, 4_000));
+      try {
+        await attempt();
+      } catch (e) {
+        console.warn('[chatbot] notify failed after retry:', e);
+      }
     }
   };
 

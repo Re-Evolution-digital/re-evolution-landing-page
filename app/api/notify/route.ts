@@ -35,16 +35,23 @@ export async function POST(req: NextRequest) {
     sendTelegramNotification(leadPayload),
   ]);
 
-  if (makeResult.status === 'rejected') {
-    console.error('Make.com webhook failed:', makeResult.reason);
-    return NextResponse.json({ error: 'Webhook failed' }, { status: 502 });
+  const makeOk = makeResult.status === 'fulfilled' && makeResult.value.ok;
+  const telegramOk = telegramResult.status === 'fulfilled';
+
+  if (!makeOk) {
+    const reason = makeResult.status === 'rejected' ? makeResult.reason : `HTTP ${(makeResult.value as Response).status}`;
+    console.error('[notify] Make.com webhook failed:', reason);
   }
 
-  if (telegramResult.status === 'rejected') {
-    console.error('Telegram notification failed:', telegramResult.reason);
+  if (!telegramOk) {
+    console.error('[notify] Telegram notification failed:', (telegramResult as PromiseRejectedResult).reason);
   }
 
-  return NextResponse.json({ ok: true });
+  if (!makeOk && !telegramOk) {
+    return NextResponse.json({ error: 'All notifications failed' }, { status: 502 });
+  }
+
+  return NextResponse.json({ ok: true, make: makeOk, telegram: telegramOk });
 }
 
 async function sendTelegramNotification(lead: Record<string, string>) {
