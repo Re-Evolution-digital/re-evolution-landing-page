@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { sheetsAppend } from '@/lib/google-sheets';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const signature = `
 <table cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif; color: #333; line-height: 1.4; min-width: 450px;">
   <tr>
@@ -118,6 +116,7 @@ export async function POST(req: NextRequest) {
 
     // 3. Confirmation email via Resend
     const { subject, html } = buildEmailHtml(name, lang);
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     await resend.emails.send({
       from: 'Re-Evolution <noreply@mail.re-evolution.pt>',
