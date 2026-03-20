@@ -210,7 +210,8 @@ export default function Chatbot() {
               onClick={openChat}
               className="relative bg-white rounded-2xl rounded-br-sm px-4 py-2.5 shadow-lg border border-border/50 cursor-pointer select-none mb-1 max-w-[190px]"
             >
-              <p className="text-sm font-bold text-re-blue leading-tight">{t('bot_name')}</p>
+              <p className="text-xs font-semibold text-re-blue/70 leading-tight">{t('bubble_greeting')}</p>
+              <p className="text-xs font-bold text-re-blue leading-tight">{t('bot_name')}</p>
               <p className="text-xs text-text-secondary mt-0.5">{t('label_cta')}</p>
             </motion.div>
 

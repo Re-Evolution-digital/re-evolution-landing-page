@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { google } from 'googleapis';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
+import { sheetsAppend } from '@/lib/google-sheets';
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  tls: {
-    rejectUnauthorized: process.env.NODE_ENV === 'production',
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const signature = `
 <table cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif; color: #333; line-height: 1.4; min-width: 450px;">
@@ -49,7 +38,7 @@ const signature = `
   Esta mensagem e quaisquer ficheiros anexos são confidenciais e destinados exclusivamente ao uso da pessoa ou entidade a quem são dirigidos. Se recebeu esta mensagem por erro, por favor notifique o remetente.
 </div>`;
 
-function buildEmailHtml(name: string, locale: string): string {
+function buildEmailHtml(name: string, locale: string): { subject: string; html: string } {
   const isEn = locale === 'en';
 
   const greeting = isEn
@@ -64,7 +53,7 @@ function buildEmailHtml(name: string, locale: string): string {
        <p>Entraremos em contacto contigo em menos de <strong>24 horas úteis</strong>.</p>
        <p>Enquanto isso, se tiveres alguma dúvida podes contactar-nos diretamente via WhatsApp ou telefone.</p>`;
 
-  const subject = isEn ? 'Diagnosis received — Re-Evolution' : 'Diagnóstico recebido — Re-Evolution';
+  const subject = isEn ? 'Diagnosis received — Re-Evolution' : 'Pedido de Diagnóstico recebido - Re-Evolution';
 
   const html = `
     <!DOCTYPE html>
@@ -100,7 +89,7 @@ function buildEmailHtml(name: string, locale: string): string {
     </body>
     </html>`;
 
-  return JSON.stringify({ subject, html });
+  return { subject, html };
 }
 
 export async function POST(req: NextRequest) {
@@ -110,25 +99,8 @@ export async function POST(req: NextRequest) {
     const lang = locale ?? 'pt';
 
     // 1. Google Sheets
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      },
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
-
-    const sheets = google.sheets({ version: 'v4', auth });
     const timestamp = new Date().toLocaleString('pt-PT', { timeZone: 'Europe/Lisbon' });
-
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-      range: 'Sheet1!A:I',
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [[timestamp, name, email, phone, businessType, challenge, budget, urgency, lang]],
-      },
-    });
+    await sheetsAppend('Sheet1!A:I', [[timestamp, name, email, phone, businessType, challenge, budget, urgency, lang]]);
 
     // 2. Telegram
     const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -144,13 +116,13 @@ export async function POST(req: NextRequest) {
       }),
     });
 
-    // 3. Confirmation email to client
-    const { subject, html } = JSON.parse(buildEmailHtml(name, lang));
+    // 3. Confirmation email via Resend
+    const { subject, html } = buildEmailHtml(name, lang);
 
-    await transporter.sendMail({
-      from: `"Re-Evolution" <${process.env.SMTP_USER}>`,
+    await resend.emails.send({
+      from: 'Re-Evolution <noreply@mail.re-evolution.pt>',
       to: email,
-      bcc: process.env.SMTP_USER,
+      bcc: process.env.CONHECIMENTO_BCC,
       subject,
       html,
     });

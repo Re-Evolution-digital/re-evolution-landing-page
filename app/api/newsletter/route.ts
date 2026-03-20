@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { google } from 'googleapis';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
+import { sheetsAppend, sheetsGet } from '@/lib/google-sheets';
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  tls: {
-    rejectUnauthorized: process.env.NODE_ENV === 'production',
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const signature = `
 <table cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif; color: #333; line-height: 1.4; min-width: 450px;">
@@ -107,38 +96,16 @@ export async function POST(req: NextRequest) {
     const { email, locale } = await req.json();
     const lang = locale ?? 'pt';
 
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      },
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
-
-    const sheets = google.sheets({ version: 'v4', auth });
-
     // 1. Check for duplicate email
-    const existing = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-      range: 'Newsletter!B:B',
-    });
-
-    const existingEmails = (existing.data.values ?? []).flat().map((e) => e.toLowerCase());
+    const existingRows = await sheetsGet('Newsletter!B:B');
+    const existingEmails = existingRows.flat().map((e) => e.toLowerCase());
     if (existingEmails.includes(email.toLowerCase())) {
       return NextResponse.json({ success: false, duplicate: true });
     }
 
     // 2. Append to sheet (Timestamp, Email, Idioma)
     const timestamp = new Date().toLocaleString('pt-PT', { timeZone: 'Europe/Lisbon' });
-
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-      range: 'Newsletter!A:C',
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [[timestamp, email, lang]],
-      },
-    });
+    await sheetsAppend('Newsletter!A:C', [[timestamp, email, lang]]);
 
     // 3. Telegram notification
     const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -154,13 +121,13 @@ export async function POST(req: NextRequest) {
       }),
     });
 
-    // 4. Confirmation email to subscriber
+    // 4. Confirmation email via Resend
     const { subject, html } = buildNewsletterEmail(lang);
 
-    await transporter.sendMail({
-      from: `"Re-Evolution" <${process.env.SMTP_USER}>`,
+    await resend.emails.send({
+      from: 'Re-Evolution <noreply@mail.re-evolution.pt>',
       to: email,
-      bcc: process.env.SMTP_USER,
+      bcc: process.env.CONHECIMENTO_BCC,
       subject,
       html,
     });

@@ -399,6 +399,7 @@
   "chatbot": {
     "title": "Speak Easy",
     "header_title": "Speak Easy, your Re-Evolution Assistant",
+    "bubble_greeting": "Hello 👋",
     "bot_name": "I'm Speak Easy",
     "label_cta": "Can I help? 💬",
     "status": "Online · Responds in seconds",

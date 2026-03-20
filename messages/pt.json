@@ -399,6 +399,7 @@
   "chatbot": {
     "title": "Fala Barato",
     "header_title": "Fala Barato, o seu Assistente da Re-Evolution",
+    "bubble_greeting": "Olá 👋",
     "bot_name": "Eu sou o Fala Barato",
     "label_cta": "Posso ajudar? 💬",
     "status": "Online · Responde em segundos",
